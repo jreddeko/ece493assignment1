@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ECE493 Assignment 1</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="fonts">
+    <item>Alex</item>
+    <item>Cardo</item>
+    <item>Chaya</item>
+    <item>David New</item>
+    <item>Droid Sans</item>
+    <item>Frank</item>
+    <item>Mike Hebrew</item>
+</string-array>
+
+</resources>

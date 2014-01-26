@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory
+        android:summary="Image Processing Filter settings"
+        android:title="Filter Settings" >
+
+        <SwitchPreference
+            android:key="FilterType"
+            android:summary="Please select filter type"
+            android:switchTextOff="Median"
+            android:switchTextOn="Mean"
+            android:title="Type" />
+
+        <EditTextPreference android:name="FilterSize"
+            android:title="Filter Size"
+            android:key="Filter Size" 
+            android:inputType="number"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>
