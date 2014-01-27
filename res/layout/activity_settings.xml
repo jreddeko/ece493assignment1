@@ -3,18 +3,19 @@
 
     <PreferenceCategory
         android:summary="Image Processing Filter settings"
-        android:title="Filter Settings" >
+        android:title="@string/filter_setting" >
 
         <SwitchPreference
             android:key="FilterType"
             android:summary="Please select filter type"
             android:switchTextOff="Median"
             android:switchTextOn="Mean"
-            android:title="Type" />
+            android:title="@string/filter_type" />
 
         <EditTextPreference android:name="FilterSize"
-            android:title="Filter Size"
-            android:key="Filter Size" 
+            android:title="@string/filter_size"
+            android:key="Filter Size"
+            android:defaultValue="3" 
             android:inputType="number"/>
     </PreferenceCategory>
 
