@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.BitmapFactory;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +19,8 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity
 {
+	private Bitmap bm;
+	private static final int SELECT_PICTURE = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -29,24 +29,33 @@ public class MainActivity extends Activity
 		setContentView(R.layout.activity_main);
 	}
 
-	private Bitmap bm;
-	private static final int SELECT_PICTURE = 1;
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuItem buttonSettings = menu.add("Settings");  
-	    buttonSettings.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-	    buttonSettings.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+		MenuItem buttonSettings = menu.add("Settings");  
+		buttonSettings.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+		buttonSettings.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
 
-	        public boolean onMenuItemClick(MenuItem item) {
-	            Intent intent = new Intent(MainActivity.this, SettingsActivity.class); 
-	            MainActivity.this.startActivity(intent);
-	            return false; 
-	        }
-	    });
-	return true;
+			public boolean onMenuItemClick(MenuItem item) {
+				Intent intent = new Intent(MainActivity.this, SettingsActivity.class); 
+				MainActivity.this.startActivity(intent);
+				return false; 
+			}
+		});
+		return true;
 	}
-	public void processImage(View v)
+	
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK) {
+			if (requestCode == SELECT_PICTURE) {
+				Uri selectedImageUri = data.getData();
+				ImageView image = (ImageView) findViewById(R.id.imageView1);
+				bm = ImageHelper.getBitmap(ImageHelper.MAX_FILTER_SIZE,ImageHelper.MAX_FILTER_SIZE, getPath(selectedImageUri));
+				image.setImageBitmap(bm);
+			}
+		}
+	}
+	
+	public void buttonProcessImage(View v)
 	{
 		ImageView image = (ImageView)findViewById(R.id.imageView1);
 		if(image.getDrawable() == null)
@@ -54,10 +63,10 @@ public class MainActivity extends Activity
 			Toast.makeText(this, "Please select an image", Toast.LENGTH_LONG).show();
 			return;
 		}
-		new ApplyFilterTask().execute(ImageHelper.getPix(bm));
+		new ApplyFilterTask().execute(ImageHelper.getPixels(bm));
 	}
 
-	public void loadImage(View v)
+	public void buttonLoadImage(View v)
 	{
 		Intent intent = new Intent();
 		intent.setType("image/*");
@@ -65,19 +74,8 @@ public class MainActivity extends Activity
 		startActivityForResult(Intent.createChooser(intent,
 				"Select Picture"), SELECT_PICTURE);
 	}
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == RESULT_OK) {
-			if (requestCode == SELECT_PICTURE) {
-				Uri selectedImageUri = data.getData();
-				ImageView image = (ImageView) findViewById(R.id.imageView1);
-				bm = ImageHelper.decodeSampledBitmapFromResource(50,50, getPath(selectedImageUri));
-				image.setImageBitmap(bm);
-			}
-		}
-	}
 
-
-
+	@SuppressWarnings("deprecation")
 	private String getPath(Uri uri) {
 		String[] projection = { MediaStore.Images.Media.DATA };
 		Cursor cursor = managedQuery(uri, projection, null, null, null);
@@ -89,10 +87,11 @@ public class MainActivity extends Activity
 		}
 		return uri.getPath();
 	}
+	
 	private class ApplyFilterTask extends AsyncTask<int[][], Void, int[][]>
 	{
-
 		private ProgressDialog dialog;
+		
 		@Override
 		protected void onPreExecute() 
 		{
@@ -105,7 +104,7 @@ public class MainActivity extends Activity
 		{
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
 			Integer size = Integer.parseInt(prefs.getString("Filter Size",null));
-			//switch on is mean
+			
 			if(prefs.getBoolean("FilterType", false))
 				return new ImageFilter(r[0],size).applyMeanFilter();
 			else
@@ -119,7 +118,7 @@ public class MainActivity extends Activity
 				dialog.dismiss();
 			}
 			ImageView im = (ImageView)findViewById(R.id.imageView1);
-			im.setImageBitmap(ImageHelper.setPix(result));
+			im.setImageBitmap(ImageHelper.setPixels(result));
 		}
 
 	}

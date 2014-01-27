@@ -6,34 +6,71 @@ import android.graphics.Bitmap.Config;
 
 public class ImageHelper
 {
+	public static Integer MAX_FILTER_SIZE = 50;
 
-	public static int[][] getPix(Bitmap bitmap)
+	/**
+	 * Creates a 2d array of pixels from a bitmap
+	 * @param bitmap
+	 * @return
+	 */
+	public static int[][] getPixels(Bitmap bitmap)
 	{
-		int[][] r = new int[bitmap.getHeight()][bitmap.getWidth()];
+		int[][] pixels = new int[bitmap.getHeight()][bitmap.getWidth()];
 		for(int i = 0; i < bitmap.getHeight();i++)
 		{
 			for(int j = 0; j < bitmap.getWidth();j++)
 			{
 				int p = bitmap.getPixel(j, i);
-				r[i][j] = p;
+				pixels[i][j] = p;
 			}
 		}
-		return r;
+		return pixels;
 	}
 
-	public static Bitmap decodeSampledBitmapFromResource(
-			int reqWidth, int reqHeight, String selectedImagePath) {
+	/**
+	 * Creates a bitmap from a 2d array of pixels
+	 * @param n
+	 * @return
+	 */
+	public static Bitmap setPixels(int [][] n)
+	{
+		Bitmap bm = Bitmap.createBitmap(n[0].length,n.length,Config.ARGB_8888);
+		for (int i = 0; i < n.length; i++) {
+			for (int j = 0; j < n[i].length; j++) {
+				bm.setPixel(j, i, n[i][j]);
+			}
+		}
+		return bm;
+	}
 
-		final BitmapFactory.Options options = new BitmapFactory.Options();
+	/**
+	 * Creates and returns a bitmap from the image found at path.
+	 * @param w
+	 * @param h
+	 * @param path
+	 * @return
+	 */
+	public static Bitmap getBitmap(int w, int h, String path) 
+	{
+		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds = true;
-		BitmapFactory.decodeFile(selectedImagePath, options);
-		options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+		BitmapFactory.decodeFile(path, options);
+		options.inSampleSize = calcBitmapSize(options, w, h);
 		options.inJustDecodeBounds = false;
-		return BitmapFactory.decodeFile(selectedImagePath, options);
+		Bitmap bm = BitmapFactory.decodeFile(path, options);
+		MAX_FILTER_SIZE = bm.getWidth() > bm.getHeight() ? bm.getHeight() : bm.getWidth();
+		return bm;
 	}
 
-
-	public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+	/**
+	 * Helps to calculate appropriate  size of image
+	 * @param options
+	 * @param reqWidth
+	 * @param reqHeight
+	 * @return
+	 */
+	public static int calcBitmapSize(BitmapFactory.Options options, int reqWidth, int reqHeight) 
+	{
 		final int height = options.outHeight;
 		final int width = options.outWidth;
 		int inSampleSize = 1;
@@ -46,16 +83,6 @@ public class ImageHelper
 			}
 		}
 		return inSampleSize;
-	}
-	public static Bitmap setPix(int [][] n)
-	{
-		Bitmap bm = Bitmap.createBitmap(n[0].length,n.length,Config.ARGB_8888);
-		for (int i = 0; i < n.length; i++) {
-			for (int j = 0; j < n[i].length; j++) {
-				bm.setPixel(j, i, n[i][j]);
-			}
-		}
-		return bm;
 	}
 
 }

@@ -2,22 +2,15 @@ package com.example.ece493assignment1;
 
 import android.os.Bundle;
 import android.preference.EditTextPreference;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.view.Menu;
-import android.widget.NumberPicker;
-import android.widget.Toast;
 
 public class SettingsActivity extends PreferenceActivity implements OnSharedPreferenceChangeListener
 {
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -25,11 +18,11 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 		addPreferencesFromResource(R.layout.activity_settings);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onResume() {
 	    super.onResume();
-	    // Set up a listener whenever a key changes
-	    Preference pref = findPreference("Filter Size");
+		Preference pref = findPreference("Filter Size");
 	    if (pref instanceof EditTextPreference) {
 			EditTextPreference textPref = (EditTextPreference) pref;
 			
@@ -40,10 +33,10 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 	            .registerOnSharedPreferenceChangeListener(this);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onPause() {
 	    super.onPause();
-	    // Unregister the listener whenever a key changes
 	    getPreferenceScreen().getSharedPreferences()
 	            .unregisterOnSharedPreferenceChangeListener(this);
 	}
@@ -51,8 +44,7 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key)
 	{
-		// TODO Auto-generated method stub
-
+		@SuppressWarnings("deprecation")
 		Preference pref = findPreference(key);
 		if (pref instanceof EditTextPreference) {
 			EditTextPreference textPref = (EditTextPreference) pref;
@@ -60,6 +52,11 @@ public class SettingsActivity extends PreferenceActivity implements OnSharedPref
 			if(i%2==0)
 			{
 				i++;
+				textPref.setText(i.toString());
+			}
+			if(i>ImageHelper.MAX_FILTER_SIZE)
+			{
+				i= ImageHelper.MAX_FILTER_SIZE-1;
 				textPref.setText(i.toString());
 			}
 			pref.setSummary(textPref.getText());
